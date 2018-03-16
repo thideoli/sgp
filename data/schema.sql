@@ -1,0 +1,7 @@
+CREATE TABLE `sgp` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`nome`	TEXT NOT NULL,
+	`camasCasal`	INTEGER NOT NULL,
+	`camasSolteiro`	INTEGER NOT NULL,
+	`descricao`	TEXT
+);

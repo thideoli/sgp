@@ -2,20 +2,10 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
-class APIController extends AbstractRestfulController
+class APIController extends Controller
 {
-
-    protected function methodNotAllowed()
-    {
-        $this->getResponse()->setStatusCode(405);
-        return new JsonModel([
-            'code' => $this->getResponse()->getStatusCode(),
-            'status' => $this->getResponse()->getReasonPhrase()
-        ]);
-    }
 
     public function statusAction()
     {
