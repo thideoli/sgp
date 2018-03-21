@@ -9,10 +9,14 @@ class Controller extends AbstractRestfulController
 {
     protected function methodNotAllowed()
     {
-        $this->getResponse()->setStatusCode(405);
+        return $this->jsonResponse(null, 405);
+    }
+
+    protected function jsonResponse($data = null, $statusCode = 200)
+    {
+        $this->getResponse()->setStatusCode($statusCode);
         return new JsonModel([
-            'code' => $this->getResponse()->getStatusCode(),
-            'status' => $this->getResponse()->getReasonPhrase()
+            'data' => $data,
         ]);
     }
 }

@@ -21,7 +21,7 @@ return [
             'chale' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route'    => '/api/chale[/]',
+                    'route'    => '/api/chales[/:id][/]',
                     'defaults' => [
                         'controller' => Controller\ChaleController::class
                     ],
@@ -32,7 +32,6 @@ return [
     'controllers' => [
         'factories' => [
             Controller\APIController::class => InvokableFactory::class,
-            Controller\ChaleController::class => InvokableFactory::class,
         ],
     ],
     'view_manager' => [

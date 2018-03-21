@@ -2,14 +2,13 @@
 
 namespace Application\Model;
 
-use RuntimeException;
-use Zend\Db\TableGateway\TableGatewayInterface;
+use Zend\Db\TableGateway\TableGateway;
 
 class ChaleTable
 {
     private $tableGateway;
 
-    public function __construct(TableGatewayInterface $tableGateway)
+    public function __construct(TableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
     }
@@ -17,27 +16,19 @@ class ChaleTable
     public function get($id = null)
     {
         if(!$id)
-            return $this->tableGateway->select();
+            return $this->tableGateway->select()->toArray();
 
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(['id' => $id]);
-        $row = $rowset->current();
-        if (! $row) {
-            throw new RuntimeException(sprintf(
-                'Could not find row with identifier %d',
-                $id
-            ));
-        }
 
-        return $row;
+        return $this->tableGateway->select(['id' => $id])->current();
     }
 
     public function save(Chale $chale)
     {
         $data = [
             'nome' => $chale->nome,
-            'camaCasal'  => $chale->camaCasal,
-            'camaSolteiro'  => $chale->camaSolteiro,
+            'camasCasal'  => $chale->camasCasal,
+            'camasSolteiro'  => $chale->camasSolteiro,
             'descricao'  => $chale->descricao,
         ];
 
@@ -45,21 +36,14 @@ class ChaleTable
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            return;
+            return $this->tableGateway->getLastInsertValue();
         }
 
-        if (! $this->get($id)) {
-            throw new RuntimeException(sprintf(
-                'Cannot update chale with identifier %d; does not exist',
-                $id
-            ));
-        }
-
-        $this->tableGateway->update($data, ['id' => $id]);
+         return $this->tableGateway->update($data, ['id' => $id]);
     }
 
     public function delete($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        return $this->tableGateway->delete(['id' => (int) $id]);
     }
 }

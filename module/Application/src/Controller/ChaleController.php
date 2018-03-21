@@ -2,12 +2,12 @@
 
 namespace Application\Controller;
 
+use Application\Model\Chale;
 use Application\Model\ChaleTable;
-use Zend\View\Model\JsonModel;
 
 class ChaleController extends Controller
 {
-    protected $table;
+    private $table;
 
     public function __construct(ChaleTable $table)
     {
@@ -16,29 +16,53 @@ class ChaleController extends Controller
     
     public function getList()
     {
-        $this->getResponse()->setStatusCode(200);
-        return new JsonModel([
-            $this->table->getAll()
-        ]);
+        return $this->jsonResponse($this->table->get());
     }
 
     public function get($id)
     {
-        return $this->methodNotAllowed();
+        $data = $this->table->get($id);
+
+        if(!$data)
+            return $this->jsonResponse(null, 404);
+
+        return $this->jsonResponse($data);
     }
 
     public function create($data)
     {
-        return $this->methodNotAllowed();
+        $chale = new Chale();
+        $chale->exchangeArray($data);
+        $chale->id = $this->table->save($chale);
+
+        if($chale->id > 0)
+            return $this->jsonResponse($chale->getArrayCopy(), 201);
+
+        return $this->jsonResponse(null, 500);
     }
 
     public function update($id, $data)
     {
-        return $this->methodNotAllowed();
+        if(!$this->table->get($id))
+            return $this->jsonResponse(null, 404);
+
+        $chale = new Chale();
+        $chale->exchangeArray($data);
+
+        if($this->table->save($chale) > 0)
+            return $this->jsonResponse(null, 204);
+
+        return $this->jsonResponse(null, 500);
     }
 
     public function delete($id)
     {
-        return $this->methodNotAllowed();
+        if(!$this->table->get($id))
+            return $this->jsonResponse(null, 404);
+
+        if($this->table->delete($id) > 0)
+            return $this->jsonResponse(null, 204);
+
+        return $this->jsonResponse(null, 500);
     }
 }
